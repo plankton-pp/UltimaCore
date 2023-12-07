@@ -9,6 +9,10 @@ export default {
       colors: {
         "mainBackgroundColor": '#0D1117',
         "columnBackgroundColor": '#161C22'
+      },
+      height:{
+        "75vh":"75vh",
+        "80vh":"80vh",
       }
     },
   },

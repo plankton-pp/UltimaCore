@@ -5,11 +5,12 @@
 html,
 body,
 #root {
-  @apply bg-black text-white box-border;
+  @apply text-white box-border;
+  @apply bg-gradient-to-r from-slate-900 to-slate-700
 }
 
 ::-webkit-scrollbar {
-  width: 4px;
+  width: 6px;
 }
 
 ::-webkit-scrollbar:horizontal {
@@ -17,9 +18,35 @@ body,
 }
 
 ::-webkit-scrollbar-thumb {
-  @apply bg-rose-900 rounded-xl;
+  @apply bg-slate-500 rounded-xl;
+  cursor: pointer !important;
 }
 
-.task > ::-webkit-scrollbar-thumb {
-  @apply bg-sky-500 rounded-xl;
+/* .task > ::-webkit-scrollbar-thumb {
+  @apply bg-gradient-to-t from-slate-500 to-slate-800 rounded-xl;
+} */
+
+::-webkit-scrollbar-thumb {
+  cursor: pointer !important;
 }
+
+/* ------------------------------------------------------------------------------------------------- */
+/* customized */
+.link-underline {
+  border-bottom-width: 0;
+  background-image: linear-gradient(transparent, transparent), linear-gradient(#fff, #fff);
+  background-size: 0 3px;
+  background-position: 0 100%;
+  background-repeat: no-repeat;
+  transition: background-size .5s ease-in-out;
+}
+
+.link-underline-black {
+  background-image: linear-gradient(transparent, transparent), linear-gradient(rgb(255, 255, 255), rgb(255, 255, 255))
+}
+
+.link-underline:hover {
+  background-size: 100% 3px;
+  background-position: 0 100%
+}
+

@@ -79,14 +79,13 @@ function ColumnContainer({
       ref={setNodeRef}
       style={style}
       className="
-  bg-columnBackgroundColor
-  w-[350px]
-  h-[500px]
-  max-h-[500px]
-  rounded-md
-  flex
-  flex-col
-  "
+      bg-columnBackgroundColor
+      w-[350px]
+      h-75vh
+      rounded-md
+      flex
+      flex-col
+      "
     >
       {/* Column title */}
       <div
@@ -96,7 +95,7 @@ function ColumnContainer({
           setEditMode(true);
         }}
         className="
-      bg-mainBackgroundColor
+        bg-gradient-to-r from-blue-500 to-teal-400
       text-md
       h-[60px]
       cursor-grab
@@ -105,7 +104,7 @@ function ColumnContainer({
       p-3
       font-bold
       border-columnBackgroundColor
-      border-4
+      border-1
       flex
       items-center
       justify-between
@@ -129,7 +128,7 @@ function ColumnContainer({
           {!editMode && column.title}
           {editMode && (
             <input
-              className="bg-black focus:border-rose-500 border rounded outline-none px-2"
+              className="bg-black focus:border-indigo-500 border rounded outline-none px-2"
               value={column.title}
               onChange={(e) => updateColumn(column.id, e.target.value)}
               autoFocus
@@ -150,7 +149,7 @@ function ColumnContainer({
           className="
         stroke-gray-500
         hover:stroke-white
-        hover:bg-columnBackgroundColor
+        hover:bg-rose-500
         rounded
         px-1
         py-2
@@ -175,7 +174,7 @@ function ColumnContainer({
       </div>
       {/* Column footer */}
       <button
-        className="flex gap-2 items-center border-columnBackgroundColor border-2 rounded-md p-4 border-x-columnBackgroundColor hover:bg-mainBackgroundColor hover:text-rose-500 active:bg-black"
+        className="flex gap-2 items-center border-columnBackgroundColor border-2 rounded-md p-4 border-x-columnBackgroundColor hover:bg-mainBackgroundColor hover:text-amber-300 active:bg-black"
         onClick={() => {
           createTask(column.id);
         }}

@@ -137,7 +137,16 @@ function KanbanBoard() {
         onDragEnd={onDragEnd}
         onDragOver={onDragOver}
       >
-        <div className="m-auto flex gap-4">
+        <div className="
+        backdrop-blur-sm bg-white/10
+        h-80vh
+        m-auto flex 
+        gap-4 
+        p-4 
+        rounded 
+        rounded-md
+        rounded-b-none
+        border-rose-500">
           <div className="flex gap-4">
             <SortableContext items={columnsId}>
               {columns.map((col) => (
@@ -168,7 +177,7 @@ function KanbanBoard() {
       border-2
       border-columnBackgroundColor
       p-4
-      ring-rose-500
+      ring-amber-300
       hover:ring-2
       flex
       gap-2
