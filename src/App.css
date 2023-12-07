@@ -50,3 +50,9 @@ body,
   background-position: 0 100%
 }
 
+.dot {
+  margin-top: 6px;
+  height: 13px;
+  padding-right: 5px;
+  border-radius: 50%;
+}

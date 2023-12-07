@@ -35,67 +35,79 @@ const defaultTasks: Task[] = [
   {
     id: "1",
     columnId: "todo",
+    header: "List Admin",
     content: "List admin APIs for dashboard",
   },
   {
     id: "2",
     columnId: "todo",
-    content:
-      "Develop user registration functionality with OTP delivered on SMS after email confirmation and phone number confirmation",
+    header: "Dev Register",
+    content: "Develop user registration functionality with OTP delivered on SMS after email confirmation and phone number confirmation",
   },
   {
     id: "3",
     columnId: "doing",
+    header: "Security Testing",
     content: "Conduct security testing",
   },
   {
     id: "4",
     columnId: "doing",
+    header: "Analyze Comp",
     content: "Analyze competitors",
   },
   {
     id: "5",
     columnId: "done",
+    header: "Ui Docs",
     content: "Create UI kit documentation",
   },
   {
     id: "6",
     columnId: "done",
+    header: "Dev Meeting",
     content: "Dev meeting",
   },
   {
     id: "7",
     columnId: "done",
+    header: "Dashboard Prototype",
     content: "Deliver dashboard prototype",
   },
   {
     id: "8",
     columnId: "todo",
+    header: "Optimize Perf",
     content: "Optimize application performance",
   },
   {
     id: "9",
     columnId: "todo",
+    header: "Data Validation",
     content: "Implement data validation",
   },
   {
     id: "10",
     columnId: "todo",
+    header: "DB Design",
     content: "Design database schema",
   },
   {
     id: "11",
     columnId: "todo",
+    header: "SSL Integration",
     content: "Integrate SSL web certificates into workflow",
   },
   {
     id: "12",
     columnId: "doing",
+    header: "Imp Error",
     content: "Implement error logging and monitoring",
   },
   {
     id: "13",
     columnId: "doing",
+    header: "DnI",
     content: "Design and implement responsive UI",
   },
 ];
@@ -157,7 +169,8 @@ function KanbanBoard() {
                   updateColumn={updateColumn}
                   createTask={createTask}
                   deleteTask={deleteTask}
-                  updateTask={updateTask}
+                  updateTaskHeader={updateTaskHeader}
+                  updateTaskContent={updateTaskContent}
                   tasks={tasks.filter((task) => task.columnId === col.id)}
                 />
               ))}
@@ -196,8 +209,9 @@ function KanbanBoard() {
                 deleteColumn={deleteColumn}
                 updateColumn={updateColumn}
                 createTask={createTask}
-                deleteTask={deleteTask}
-                updateTask={updateTask}
+                deleteTask={deleteTask}                
+                updateTaskHeader={updateTaskHeader}
+                updateTaskContent={updateTaskContent}
                 tasks={tasks.filter(
                   (task) => task.columnId === activeColumn.id
                 )}
@@ -207,7 +221,8 @@ function KanbanBoard() {
               <TaskCard
                 task={activeTask}
                 deleteTask={deleteTask}
-                updateTask={updateTask}
+                updateTaskHeader={updateTaskHeader}
+                updateTaskContent={updateTaskContent}
               />
             )}
           </DragOverlay>,
@@ -221,7 +236,8 @@ function KanbanBoard() {
     const newTask: Task = {
       id: generateId(),
       columnId,
-      content: `Task ${tasks.length + 1}`,
+      header:`Task ${tasks.length + 1}`,
+      content: '',
     };
 
     setTasks([...tasks, newTask]);
@@ -232,7 +248,7 @@ function KanbanBoard() {
     setTasks(newTasks);
   }
 
-  function updateTask(id: Id, content: string) {
+  function updateTaskContent(id: Id, content: string) {
     const newTasks = tasks.map((task) => {
       if (task.id !== id) return task;
       return { ...task, content };
@@ -240,6 +256,16 @@ function KanbanBoard() {
 
     setTasks(newTasks);
   }
+
+  function updateTaskHeader(id: Id, header: string) {
+    const newTasks = tasks.map((task) => {
+      if (task.id !== id) return task;
+      return { ...task, header };
+    });
+
+    setTasks(newTasks);
+  }
+
 
   function createNewColumn() {
     const columnToAdd: Column = {
