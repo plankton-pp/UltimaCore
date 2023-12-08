@@ -1,21 +1,25 @@
 import { useState } from "react";
-import TrashIcon from "../icons/TrashIcon";
-import { Id, Task } from "../types";
+import { TrashIcon, MaximizeIcon } from "../assets/Icons";
+import { Id, Task, Flag } from "../types";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 
 interface Props {
   task: Task;
+  showTaskDetail: (task: Task) => void;
   deleteTask: (id: Id) => void;
+  updateTaskFlag: (id: Id, flagId: Id) => void;
   updateTaskHeader: (id: Id, header: string) => void;
   updateTaskContent: (id: Id, content: string) => void;
+  defaultFlags: Flag[];
 
 }
 
-function TaskCard({ task, deleteTask, updateTaskHeader: updateTaskHeader, updateTaskContent: updateTaskContent }: Props) {
+function TaskCard({ task, defaultFlags, deleteTask: deleteTask, showTaskDetail: showTaskDetail, updateTaskFlag: updateTaskFlag, updateTaskHeader: updateTaskHeader, updateTaskContent: updateTaskContent }: Props) {
   const [mouseIsOver, setMouseIsOver] = useState(false);
   const [editModeHeader, setEditModeHeader] = useState(false);
   const [editModeContent, setEditModeContent] = useState(false);
+  const [editModeFlag, setEditModeFlag] = useState(false);
 
   const {
     setNodeRef,
@@ -38,12 +42,23 @@ function TaskCard({ task, deleteTask, updateTaskHeader: updateTaskHeader, update
     transform: CSS.Transform.toString(transform),
   };
 
-  const toggleEditMode = (e: any) => {
-    console.log(e.offsetHeight);
+  const toggleEditMode = () => {
 
     setEditModeContent((prev) => !prev);
     setMouseIsOver(false);
   };
+
+  const toggleFlag = () => {
+    console.log("flag !!");
+    setEditModeFlag((prev) => !prev);
+    setMouseIsOver(false);
+  };
+
+  const getFlagClass = (): string => {
+    console.log(task.flagId,defaultFlags);
+    
+    return "flex justify-center items-center bg-rose-500 px-2 py-1 text-sm dot cursor-pointer";
+  }
 
   if (isDragging) {
 
@@ -58,41 +73,6 @@ function TaskCard({ task, deleteTask, updateTaskHeader: updateTaskHeader, update
       />
     );
   }
-
-  // if (editMode) {
-  //   return (
-  //     <div
-  //       ref={setNodeRef}
-  //       style={style}
-  //       {...attributes}
-  //       {...listeners}
-  //       className="bg-mainBackgroundColor p-2.5 h-[100px] min-h-[100px] items-center flex text-left rounded-xl border-2 border-amber-200 hover:ring-2 hover:ring-inset hover:ring-amber-200 cursor-grab relative"
-  //     >
-  //       <textarea
-  //         className="
-  //       h-[90%]
-  //       w-full resize-none border-none rounded bg-transparent text-amber-200 focus:outline-none
-  //       "
-  //         value={task.content}
-  //         autoFocus
-  //         placeholder="Task content here"
-  //         onBlur={toggleEditMode}
-  //         onKeyDown={(e) => {
-  //           // if (e.key === "Enter" && e.shiftKey) {
-  //           //   toggleEditMode();
-  //           // }
-
-  //           if (e.key === "Enter" && !e.shiftKey) {
-  //             toggleEditMode();
-  //           }
-
-  //         }}
-  //         onChange={(e) => updateTaskContent(task.id, e.target.value)}
-  //       />
-  //     </div>
-  //   );
-  // }
-
   return (
     <div
       ref={setNodeRef}
@@ -119,7 +99,7 @@ function TaskCard({ task, deleteTask, updateTaskHeader: updateTaskHeader, update
           setEditModeHeader(true);
         }}
         className="
-        bg-gradient-to-r from-blue-500 to-teal-400
+        bg-zinc-600
       text-md
       h-[60px]
       cursor-grab
@@ -127,26 +107,16 @@ function TaskCard({ task, deleteTask, updateTaskHeader: updateTaskHeader, update
       rounded-b-none
       p-3
       font-bold
-      border-columnBackgroundColor
-      border-1
+      border-white
+      border-2
+      border-t border-l border-r
       flex
       items-center
       justify-between
       "
       >
-        <div className="flex gap-2">
-          <div
-            className="
-        flex
-        justify-center
-        items-center
-        bg-columnBackgroundColor
-        px-2
-        py-1
-        text-sm
-        dot
-        "
-          >
+        <div className="flex gap-1">
+          <div className={getFlagClass()}>
 
           </div>
           {!editModeHeader && task.header}
@@ -166,35 +136,49 @@ function TaskCard({ task, deleteTask, updateTaskHeader: updateTaskHeader, update
             />
           )}
         </div>
-        {mouseIsOver && (<button
-          onClick={() => {
-            deleteTask(task.id);
-          }}
-          className="
-        stroke-gray-500
-        hover:stroke-white
-        hover:bg-rose-500
-        rounded
-        px-1
-        py-2
-        "
-        >
-          <TrashIcon />
-        </button>)}
+        {mouseIsOver && (
+          <div>
+            <button
+              onClick={() => {
+                showTaskDetail(task);
+              }}
+              className="
+              stroke-gray-500
+              hover:stroke-white
+              hover:bg-rose-500
+              rounded
+              mx-2
+              "
+            >
+              <MaximizeIcon />
+            </button>
+            <button
+              onClick={() => {
+                deleteTask(task.id);
+              }}
+              className="
+              stroke-gray-500
+              hover:stroke-white
+              hover:bg-rose-500
+              rounded
+              "
+            >
+              <TrashIcon />
+            </button>
+          </div>
+        )}
       </div>
 
       {!editModeContent && (
         <div className="border-b border-l border-r hover:border-amber-300 rounded-b-md overflow-x-hidden overflow-y-auto min-h-[75px] max-h-[225px]"
-          onClick={(e) => { toggleEditMode(e) }}
+          onClick={toggleEditMode}
         >
           <div
             className="h-full rounded-b-md items-center border-columnBackgroundColor border-2 whitespace-pre-wrap p-3 border-x-columnBackgroundColor hover:bg-mainBackgroundColor hover:text-amber-200 active:bg-black"
           >
             {task.content}
-
           </div>
         </div>
-
       )}
       {editModeContent && (
         <div className="border-b border-l border-r border-amber-300 rounded-b-md overflow-x-hidden overflow-y-auto min-h-[75px]">
@@ -208,7 +192,7 @@ function TaskCard({ task, deleteTask, updateTaskHeader: updateTaskHeader, update
               onBlur={toggleEditMode}
               onKeyDown={(e) => {
                 if (e.key === "Enter" && !e.shiftKey) {
-                  toggleEditMode(e);
+                  toggleEditMode();
                 }
 
               }}

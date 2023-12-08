@@ -1,6 +1,6 @@
-import PlusIcon from "../icons/PlusIcon";
+import { PlusIcon } from "../assets/Icons";
 import { useMemo, useState } from "react";
-import { Column, Id, Task } from "../types";
+import { Column, Flag, Id, Task } from "../types";
 import ColumnContainer from "./ColumnContainer";
 import {
   DndContext,
@@ -37,81 +37,121 @@ const defaultTasks: Task[] = [
     columnId: "todo",
     header: "List Admin",
     content: "List admin APIs for dashboard",
+    flagId: "flg02"
   },
   {
     id: "2",
     columnId: "todo",
     header: "Dev Register",
     content: "Develop user registration functionality with OTP delivered on SMS after email confirmation and phone number confirmation",
+    flagId: "flg02"
   },
   {
     id: "3",
     columnId: "doing",
     header: "Security Testing",
     content: "Conduct security testing",
+    flagId: "flg04"
   },
   {
     id: "4",
     columnId: "doing",
     header: "Analyze Comp",
     content: "Analyze competitors",
+    flagId: "flg01"
   },
   {
     id: "5",
     columnId: "done",
     header: "Ui Docs",
     content: "Create UI kit documentation",
+    flagId: "flg02"
   },
   {
     id: "6",
     columnId: "done",
     header: "Dev Meeting",
     content: "Dev meeting",
+    flagId: "flg01"
   },
   {
     id: "7",
     columnId: "done",
     header: "Dashboard Prototype",
     content: "Deliver dashboard prototype",
+    flagId: "flg01"
   },
   {
     id: "8",
     columnId: "todo",
     header: "Optimize Perf",
     content: "Optimize application performance",
+    flagId: "flg03"
   },
   {
     id: "9",
     columnId: "todo",
     header: "Data Validation",
     content: "Implement data validation",
+    flagId: "flg02"
   },
   {
     id: "10",
     columnId: "todo",
     header: "DB Design",
     content: "Design database schema",
+    flagId: "flg03"
   },
   {
     id: "11",
     columnId: "todo",
     header: "SSL Integration",
     content: "Integrate SSL web certificates into workflow",
+    flagId: "flg03"
   },
   {
     id: "12",
     columnId: "doing",
     header: "Imp Error",
     content: "Implement error logging and monitoring",
+    flagId: "flg04"
   },
   {
     id: "13",
     columnId: "doing",
     header: "DnI",
     content: "Design and implement responsive UI",
+    flagId: "flg03"
   },
 ];
 
+
+const defaultFlags: Flag[] = [
+  {
+    id: "flg01",
+    name: "Calm-Later",
+    color:"lime-400",
+    abbr: "CL",
+  },
+  {
+    id: "flg02",
+    name: "Calm-Now",
+    color:"blue-300",
+    abbr: "CN",
+  },
+  {
+    id: "flg03",
+    name: "Fire-Later",
+    color:"amber-300",
+    abbr: "FL",
+  },
+  {
+    id: "flg04",
+    name: "Fire-Now",
+    color:"rose-500",
+    abbr: "FN",
+  }
+];
 function KanbanBoard() {
   const [columns, setColumns] = useState<Column[]>(defaultCols);
   const columnsId = useMemo(() => columns.map((col) => col.id), [columns]);
@@ -168,7 +208,10 @@ function KanbanBoard() {
                   deleteColumn={deleteColumn}
                   updateColumn={updateColumn}
                   createTask={createTask}
+                  showTaskDetail={showTaskDetail}
                   deleteTask={deleteTask}
+                  defaultFlags={defaultFlags}
+                  updateTaskFlag = {updateTaskFlag}
                   updateTaskHeader={updateTaskHeader}
                   updateTaskContent={updateTaskContent}
                   tasks={tasks.filter((task) => task.columnId === col.id)}
@@ -209,9 +252,12 @@ function KanbanBoard() {
                 deleteColumn={deleteColumn}
                 updateColumn={updateColumn}
                 createTask={createTask}
-                deleteTask={deleteTask}                
+                showTaskDetail={showTaskDetail}
+                deleteTask={deleteTask}
+                updateTaskFlag = {updateTaskFlag}
                 updateTaskHeader={updateTaskHeader}
                 updateTaskContent={updateTaskContent}
+                defaultFlags={defaultFlags}
                 tasks={tasks.filter(
                   (task) => task.columnId === activeColumn.id
                 )}
@@ -220,9 +266,12 @@ function KanbanBoard() {
             {activeTask && (
               <TaskCard
                 task={activeTask}
+                showTaskDetail={showTaskDetail}
                 deleteTask={deleteTask}
+                updateTaskFlag = {updateTaskFlag}
                 updateTaskHeader={updateTaskHeader}
                 updateTaskContent={updateTaskContent}
+                defaultFlags={defaultFlags}
               />
             )}
           </DragOverlay>,
@@ -238,13 +287,28 @@ function KanbanBoard() {
       columnId,
       header:`Task ${tasks.length + 1}`,
       content: '',
+      flagId: 'flg01'
     };
 
     setTasks([...tasks, newTask]);
   }
 
+  function showTaskDetail(taskTarget: Task) {
+    console.log(taskTarget);
+    
+  }
+
   function deleteTask(id: Id) {
     const newTasks = tasks.filter((task) => task.id !== id);
+    setTasks(newTasks);
+  }
+
+  function updateTaskFlag(id: Id, flagId: Id) {
+    const newTasks = tasks.map((task) => {
+      if (task.id !== id) return task;
+      return { ...task, flagId };
+    });
+
     setTasks(newTasks);
   }
 

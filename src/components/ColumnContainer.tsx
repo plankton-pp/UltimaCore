@@ -1,9 +1,8 @@
 import { SortableContext, useSortable } from "@dnd-kit/sortable";
-import TrashIcon from "../icons/TrashIcon";
-import { Column, Id, Task } from "../types";
+import { Column, Id, Task, Flag } from "../types";
 import { CSS } from "@dnd-kit/utilities";
 import { useMemo, useState } from "react";
-import PlusIcon from "../icons/PlusIcon";
+import { PlusIcon, TrashIcon } from "../assets/Icons";
 import TaskCard from "./TaskCard";
 
 interface Props {
@@ -12,10 +11,13 @@ interface Props {
   updateColumn: (id: Id, title: string) => void;
 
   createTask: (columnId: Id) => void;
+  updateTaskFlag: (id: Id, flagId: Id) => void;
   updateTaskHeader: (id: Id, content: string) => void;
   updateTaskContent: (id: Id, content: string) => void;
+  showTaskDetail: (task: Task) => void;
   deleteTask: (id: Id) => void;
   tasks: Task[];
+  defaultFlags: Flag[];
 }
 
 function ColumnContainer({
@@ -24,13 +26,15 @@ function ColumnContainer({
   updateColumn,
   createTask,
   tasks,
+  showTaskDetail,
   deleteTask,
+  updateTaskFlag,
   updateTaskHeader,
   updateTaskContent,
-  
+  defaultFlags
+
 }: Props) {
   const [editMode, setEditMode] = useState(false);
-
   const tasksIds = useMemo(() => {
     return tasks.map((task) => task.id);
   }, [tasks]);
@@ -169,9 +173,12 @@ function ColumnContainer({
             <TaskCard
               key={task.id}
               task={task}
+              showTaskDetail={showTaskDetail}
               deleteTask={deleteTask}
+              updateTaskFlag={updateTaskFlag}
               updateTaskHeader={updateTaskHeader}
               updateTaskContent={updateTaskContent}
+              defaultFlags={defaultFlags}
             />
           ))}
         </SortableContext>
