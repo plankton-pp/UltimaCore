@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { TrashIcon, MaximizeIcon } from "../assets/Icons";
+import { JSXElementConstructor, useState } from "react";
+import { TrashIcon, MaximizeIcon, PencilIcon } from "../assets/Icons";
 import { Id, Task, Flag } from "../types";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
@@ -11,11 +11,11 @@ interface Props {
   updateTaskFlag: (id: Id, flagId: Id) => void;
   updateTaskHeader: (id: Id, header: string) => void;
   updateTaskContent: (id: Id, content: string) => void;
-  defaultFlags: Flag[];
+  flagElement: JSX.Element;
 
 }
 
-function TaskCard({ task, defaultFlags, deleteTask: deleteTask, showTaskDetail: showTaskDetail, updateTaskFlag: updateTaskFlag, updateTaskHeader: updateTaskHeader, updateTaskContent: updateTaskContent }: Props) {
+function TaskCard({ task, flagElement, deleteTask: deleteTask, showTaskDetail: showTaskDetail, updateTaskFlag: updateTaskFlag, updateTaskHeader: updateTaskHeader, updateTaskContent: updateTaskContent }: Props) {
   const [mouseIsOver, setMouseIsOver] = useState(false);
   const [editModeHeader, setEditModeHeader] = useState(false);
   const [editModeContent, setEditModeContent] = useState(false);
@@ -48,18 +48,16 @@ function TaskCard({ task, defaultFlags, deleteTask: deleteTask, showTaskDetail: 
     setMouseIsOver(false);
   };
 
-  const toggleFlag = () => {
-    console.log("flag !!");
-    setEditModeFlag((prev) => !prev);
-    setMouseIsOver(false);
-  };
+  // const toggleFlag = () => {
+  //   console.log("flag !!");
+  //   setEditModeFlag((prev) => !prev);
+  //   setMouseIsOver(false);
+  // };
 
-  const getFlagClass = (): string => {
-    console.log(task.flagId,defaultFlags);
-    
-    return "flex justify-center items-center bg-rose-500 px-2 py-1 text-sm dot cursor-pointer";
-  }
+  // const getFlagClass = (): string => {
 
+  //   return "flex justify-center items-center bg-rose-500 px-2 py-1 text-sm dot cursor-pointer";
+  // }
   if (isDragging) {
 
     return (
@@ -73,6 +71,7 @@ function TaskCard({ task, defaultFlags, deleteTask: deleteTask, showTaskDetail: 
       />
     );
   }
+
   return (
     <div
       ref={setNodeRef}
@@ -95,9 +94,6 @@ function TaskCard({ task, defaultFlags, deleteTask: deleteTask, showTaskDetail: 
       <div
         {...attributes}
         {...listeners}
-        onClick={() => {
-          setEditModeHeader(true);
-        }}
         className="
         bg-zinc-600
       text-md
@@ -116,13 +112,16 @@ function TaskCard({ task, defaultFlags, deleteTask: deleteTask, showTaskDetail: 
       "
       >
         <div className="flex gap-1">
-          <div className={getFlagClass()}>
-
-          </div>
-          {!editModeHeader && task.header}
+          {flagElement}
+          {!editModeHeader && (<div
+            className="w-48"
+            onClick={() => {
+              setEditModeHeader(true);
+            }}>{task.header}
+          </div>)}
           {editModeHeader && (
             <input
-              className="bg-black focus:border-indigo-500 border rounded outline-none px-2"
+              className="bg-black focus:border-indigo-500 border rounded outline-none px-2 w-48"
               value={task.header}
               onChange={(e) => updateTaskHeader(task.id, e.target.value)}
               autoFocus
@@ -147,10 +146,9 @@ function TaskCard({ task, defaultFlags, deleteTask: deleteTask, showTaskDetail: 
               hover:stroke-white
               hover:bg-rose-500
               rounded
-              mx-2
               "
             >
-              <MaximizeIcon />
+              <PencilIcon />
             </button>
             <button
               onClick={() => {
@@ -177,6 +175,22 @@ function TaskCard({ task, defaultFlags, deleteTask: deleteTask, showTaskDetail: 
             className="h-full rounded-b-md items-center border-columnBackgroundColor border-2 whitespace-pre-wrap p-3 border-x-columnBackgroundColor hover:bg-mainBackgroundColor hover:text-amber-200 active:bg-black"
           >
             {task.content}
+          </div>
+          <div className="absolute right-4 top-1/2 -translate-y-1/2">
+            <button
+              onClick={() => {
+                showTaskDetail(task);
+              }}
+              className="
+              stroke-gray-500
+              hover:stroke-white
+              hover:bg-rose-500
+              rounded
+              mx-2
+              "
+            >
+              <MaximizeIcon />
+            </button>
           </div>
         </div>
       )}

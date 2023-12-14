@@ -4,12 +4,12 @@ import { CSS } from "@dnd-kit/utilities";
 import { useMemo, useState } from "react";
 import { PlusIcon, TrashIcon } from "../assets/Icons";
 import TaskCard from "./TaskCard";
+import Dot from "./Dot";
 
 interface Props {
   column: Column;
   deleteColumn: (id: Id) => void;
   updateColumn: (id: Id, title: string) => void;
-
   createTask: (columnId: Id) => void;
   updateTaskFlag: (id: Id, flagId: Id) => void;
   updateTaskHeader: (id: Id, content: string) => void;
@@ -169,18 +169,25 @@ function ColumnContainer({
       {/* Column task container */}
       <div className="flex flex-grow flex-col gap-4 p-2 overflow-x-hidden overflow-y-auto">
         <SortableContext items={tasksIds}>
-          {tasks.map((task) => (
-            <TaskCard
-              key={task.id}
-              task={task}
-              showTaskDetail={showTaskDetail}
-              deleteTask={deleteTask}
-              updateTaskFlag={updateTaskFlag}
-              updateTaskHeader={updateTaskHeader}
-              updateTaskContent={updateTaskContent}
-              defaultFlags={defaultFlags}
-            />
-          ))}
+          {tasks.map((task) => {
+
+            const flagColor = [...defaultFlags].filter((status) => status.id === task.flagId)[0].color;
+            const dotElement = (<Dot updateTaskFlag={updateTaskFlag} statusColor={flagColor}></Dot>);
+      
+            
+            return (
+              <TaskCard
+                key={task.id}
+                task={task}
+                showTaskDetail={showTaskDetail}
+                deleteTask={deleteTask}
+                updateTaskFlag={updateTaskFlag}
+                updateTaskHeader={updateTaskHeader}
+                updateTaskContent={updateTaskContent}
+                flagElement={dotElement}
+              />
+            )
+          })}
         </SortableContext>
       </div>
       {/* Column footer */}

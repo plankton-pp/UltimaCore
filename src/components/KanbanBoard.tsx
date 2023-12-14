@@ -2,6 +2,7 @@ import { PlusIcon } from "../assets/Icons";
 import { useMemo, useState } from "react";
 import { Column, Flag, Id, Task } from "../types";
 import ColumnContainer from "./ColumnContainer";
+import Dot from "./Dot";
 import {
   DndContext,
   DragEndEvent,
@@ -130,25 +131,25 @@ const defaultFlags: Flag[] = [
   {
     id: "flg01",
     name: "Calm-Later",
-    color:"lime-400",
+    color: "lime-400",
     abbr: "CL",
   },
   {
     id: "flg02",
     name: "Calm-Now",
-    color:"blue-300",
+    color: "sky-400",
     abbr: "CN",
   },
   {
     id: "flg03",
     name: "Fire-Later",
-    color:"amber-300",
+    color: "amber-300",
     abbr: "FL",
   },
   {
     id: "flg04",
     name: "Fire-Now",
-    color:"rose-500",
+    color: "rose-500",
     abbr: "FN",
   }
 ];
@@ -161,6 +162,8 @@ function KanbanBoard() {
   const [activeColumn, setActiveColumn] = useState<Column | null>(null);
 
   const [activeTask, setActiveTask] = useState<Task | null>(null);
+
+  const [activeFlag, setActiveFlag] = useState<JSX.Element>(<></>);
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -211,7 +214,7 @@ function KanbanBoard() {
                   showTaskDetail={showTaskDetail}
                   deleteTask={deleteTask}
                   defaultFlags={defaultFlags}
-                  updateTaskFlag = {updateTaskFlag}
+                  updateTaskFlag={updateTaskFlag}
                   updateTaskHeader={updateTaskHeader}
                   updateTaskContent={updateTaskContent}
                   tasks={tasks.filter((task) => task.columnId === col.id)}
@@ -254,7 +257,7 @@ function KanbanBoard() {
                 createTask={createTask}
                 showTaskDetail={showTaskDetail}
                 deleteTask={deleteTask}
-                updateTaskFlag = {updateTaskFlag}
+                updateTaskFlag={updateTaskFlag}
                 updateTaskHeader={updateTaskHeader}
                 updateTaskContent={updateTaskContent}
                 defaultFlags={defaultFlags}
@@ -268,10 +271,10 @@ function KanbanBoard() {
                 task={activeTask}
                 showTaskDetail={showTaskDetail}
                 deleteTask={deleteTask}
-                updateTaskFlag = {updateTaskFlag}
+                updateTaskFlag={updateTaskFlag}
                 updateTaskHeader={updateTaskHeader}
                 updateTaskContent={updateTaskContent}
-                defaultFlags={defaultFlags}
+                flagElement={activeFlag}
               />
             )}
           </DragOverlay>,
@@ -285,7 +288,7 @@ function KanbanBoard() {
     const newTask: Task = {
       id: generateId(),
       columnId,
-      header:`Task ${tasks.length + 1}`,
+      header: `Task ${tasks.length + 1}`,
       content: '',
       flagId: 'flg01'
     };
@@ -295,7 +298,7 @@ function KanbanBoard() {
 
   function showTaskDetail(taskTarget: Task) {
     console.log(taskTarget);
-    
+
   }
 
   function deleteTask(id: Id) {
@@ -365,6 +368,12 @@ function KanbanBoard() {
 
     if (event.active.data.current?.type === "Task") {
       setActiveTask(event.active.data.current.task);
+
+      const flagColor = [...defaultFlags].filter((status) => status.id === event.active.data.current?.task.flagId)[0].color;
+      console.log(flagColor);
+
+      const dotElement = (<Dot updateTaskFlag={updateTaskFlag} statusColor={flagColor}></Dot>);
+      setActiveFlag(dotElement);
       return;
     }
   }
@@ -383,8 +392,6 @@ function KanbanBoard() {
 
     const isActiveAColumn = active.data.current?.type === "Column";
     if (!isActiveAColumn) return;
-
-    console.log("DRAG END");
 
     setColumns((columns) => {
       const activeColumnIndex = columns.findIndex((col) => col.id === activeId);
@@ -433,7 +440,7 @@ function KanbanBoard() {
         const activeIndex = tasks.findIndex((t) => t.id === activeId);
 
         tasks[activeIndex].columnId = overId;
-        console.log("DROPPING TASK OVER COLUMN", { activeIndex });
+        // console.log("DROPPING TASK OVER COLUMN", { activeIndex });
         return arrayMove(tasks, activeIndex, activeIndex);
       });
     }
